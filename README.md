@@ -1,4 +1,4 @@
-# Share It
+# Explore With Me
 ## Стэк:
 Spring Boot, Hibernate, PostgreSQL, Docker, Maven, Lombok.
 ## Функциональность:

@@ -29,7 +29,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorId(long userId, Pageable pageable);
 
+    List<Event> findAllByInitiatorIdInAndEventDateIsAfterAndState(Set<Long> authorIds, LocalDateTime eventDate, State state, Pageable pageable);
+
     Event findEventByIdAndInitiatorId(long eventId, long userId);
+
 
     @Query("select i from Event i " +
             "where i.initiator.id in ?1 " +

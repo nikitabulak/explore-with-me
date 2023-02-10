@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -248,6 +249,19 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    @Override
+    public List<EventShortDto> getSubscriptionEvents(long userId, int from, int size) {
+        User subscriber = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь с таким id не найден!"));
+        Set<Long> authorIds = subscriber.getAuthors().stream().map(User::getId).collect(Collectors.toSet());
+        List<Event> subscriptionEvents = eventRepository.findAllByInitiatorIdInAndEventDateIsAfterAndState(authorIds,
+                LocalDateTime.now().plusHours(2),
+                State.PUBLISHED,
+                OffsetLimitPageable.of(from, size));
+        return subscriptionEvents.stream()
+                .map(x -> EventMapper.toEventShortDto(x, getConfirmedRequestsCount(x.getId()), getEventViews(x)))
+                .collect(Collectors.toList());
+    }
+
     public int getConfirmedRequestsCount(long eventId) {
         return requestRepository.findByEventIdAndStatus(eventId, Status.CONFIRMED).size();
     }
@@ -255,6 +269,4 @@ public class EventServiceImpl implements EventService {
     public int getEventViews(Event event) {
         return eventClient.getStats(GET_EVENT_VIEWS_START_DATE, event.getEventDate(), List.of("/events/" + event.getId()), false).getHits();
     }
-
-
 }

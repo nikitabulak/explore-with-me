@@ -57,8 +57,15 @@ public class EventPrivateController {
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
     public ParticipationRequestDto rejectRequestToEventOfUser(@PathVariable long userId,
-                                                               @PathVariable long eventId,
-                                                               @PathVariable long reqId) {
+                                                              @PathVariable long eventId,
+                                                              @PathVariable long reqId) {
         return eventService.rejectRequestToEventOfUser(userId, eventId, reqId);
+    }
+
+    @GetMapping("/{userId}/get_subscription_events")
+    public List<EventShortDto> getSubscriptionEvents(@PathVariable long userId,
+                                                     @RequestParam(required = false, defaultValue = "0") int from,
+                                                     @RequestParam(required = false, defaultValue = "10") int size) {
+        return eventService.getSubscriptionEvents(userId, from, size);
     }
 }

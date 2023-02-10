@@ -1,6 +1,9 @@
 package ru.practicum.explorewithme.compilation.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.explorewithme.event.model.Event;
 
 import javax.persistence.*;
@@ -29,5 +32,5 @@ public class Compilation {
             joinColumns = {@JoinColumn(name = "compilation_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
-    Set<Event> events = new HashSet<>();
+    private Set<Event> events = new HashSet<>();
 }
